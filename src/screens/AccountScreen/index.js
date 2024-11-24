@@ -1,8 +1,8 @@
 import {Button, Text, View} from 'react-native';
 import {useContext} from "react";
-import {AuthContext} from "../AuthContext";
+import {AuthContext} from "../../AuthContext";
 
-function AccountScreen({ navigation }) {
+const AccountScreen = ({ navigation }) => {
     const { handleAuthentication } = useContext(AuthContext);
     const handleLogOut = () => {
         handleAuthentication();
