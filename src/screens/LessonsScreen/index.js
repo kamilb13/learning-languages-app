@@ -21,9 +21,9 @@ const LessonsScreen = ({ navigation }) => {
         }
     ]
 
-    const handlePress = (lessonName) => {
-        navigation.navigate("LessonDetail")
-        console.log(`${lessonName.name} clicked`);
+    const handlePress = (lesson) => {
+        navigation.navigate("LessonDetail", lesson.id)
+        console.log(`${lesson.name} clicked`);
     };
 
     return (
