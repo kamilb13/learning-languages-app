@@ -6,14 +6,18 @@ const LessonDetailScreen = ({ route }) => {
     const lessonId = route.params.lesson.id;
     const tasks = route.params.lesson.tasks;
     const name = route.params.lesson.name;
-
+    console.log(tasks)
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Numer lekcji: {lessonId}</Text>
-            <Text style={styles.text}>Nazwa {name}</Text>
-            {/*<Text style={styles.text}>Zadania: {tasks}</Text>*/}
-            {tasks.map((task) =>
-                <Text style={{fontSize: 18}}>{task}</Text>
+            <Text style={styles.text}>Nazwa lekcji {name}</Text>
+            {tasks.map((task, index) =>
+                <Text
+                    key={index}
+                    style={{fontSize: 18}}
+                >
+                    {task}
+                </Text>
             )}
         </View>
     );
