@@ -4,6 +4,7 @@ import MainDrawer from "../drawer/MainDrawer";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import LessonDetailScreen from "../../screens/LessonDetailScreen";
 import {NavigationContainer} from "@react-navigation/native";
+import ExerciseDetailScreen from "../../screens/ExercisesDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -15,9 +16,10 @@ const StackNav = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="AuthScreen">
-                <Stack.Screen name="AuthScreen" component={AuthScreen} options={options} />
+                {/*<Stack.Screen name="AuthScreen" component={AuthScreen} options={options} />*/}
                 <Stack.Screen name="Main" component={MainDrawer} options={options} />
                 <Stack.Screen name="LessonDetail" component={LessonDetailScreen} />
+                <Stack.Screen name="ExerciseDetail" component={ExerciseDetailScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );
