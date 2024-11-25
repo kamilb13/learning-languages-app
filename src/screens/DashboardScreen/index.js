@@ -4,14 +4,12 @@ import { Card, Text, ProgressBar, Chip } from 'react-native-paper';
 import {useLessonContext} from "../../LessonContext";
 
 function Dashboard({ navigation }) {
-    const numberOfCompletedLessons = 12;
-    const numberOfLessons = 20;
     const difficultyLevel = "Intermediate";
 
-    const { totalLessons, completedLessons, completedCount } = useLessonContext();
-    const progress = completedCount/totalLessons;
+    const { completedCount, lessonsCount } = useLessonContext();
+    const progress = completedCount/lessonsCount;
     console.log(completedCount)
-    // TODO ŹLE LICZY UKONCZONE LEKCJE!!! (5 lekcja = 5pkt, a 1 lek = 1pkt coś z id nie tak)
+
     return (
         <View style={styles.container}>
             <Card style={styles.card}>
@@ -19,7 +17,7 @@ function Dashboard({ navigation }) {
                     <Text variant="titleLarge" style={styles.title}>
                         Your Progress
                     </Text>
-                    <Text variant="bodyLarge">Lessons Completed: {completedCount}/{totalLessons}</Text>
+                    <Text variant="bodyLarge">Lessons Completed: {completedCount}/{lessonsCount}</Text>
                     <ProgressBar progress={progress} color="#6200EE" style={styles.progressBar} />
                     <Text variant="bodySmall" style={styles.progressText}>
                         {progress * 100}% Completed

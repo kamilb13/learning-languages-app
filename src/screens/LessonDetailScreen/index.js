@@ -8,12 +8,12 @@ const LessonDetailScreen = ({ route, navigation }) => {
     const tasks = route.params.lesson.tasks;
     const name = route.params.lesson.name;
 
-    const {setLessonStatus} = useLessonContext();
+    const {setLessonStatus, completeLesson} = useLessonContext();
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Numer lekcji: {lessonId}</Text>
-            <Text style={styles.text}>Nazwa lekcji {name}</Text>
+            <Text style={styles.text}>Numer of lesson: {lessonId}</Text>
+            <Text style={styles.text}>Name of lesson: {name}</Text>
             {tasks.map((task, index) =>
                 <Text
                     key={index}
@@ -27,6 +27,7 @@ const LessonDetailScreen = ({ route, navigation }) => {
                 mode="contained"
                 style={{padding: 8, marginTop: 40}}
                 onPress={() => {
+                    completeLesson(lessonId);
                     navigation.goBack();
                     setLessonStatus((prevStatus) => ({
                         ...prevStatus,
