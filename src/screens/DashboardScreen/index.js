@@ -1,12 +1,75 @@
-import {Button, Text, View} from 'react-native';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Card, Text, ProgressBar, Chip } from 'react-native-paper';
+import {useLessonContext} from "../../LessonContext";
 
-function Index({ navigation }) {
+function Dashboard({ navigation }) {
+    const numberOfCompletedLessons = 12;
+    const numberOfLessons = 20;
+    const difficultyLevel = "Intermediate";
 
+    const { totalLessons, completedLessons, completedCount } = useLessonContext();
+    const progress = completedCount/totalLessons;
+    console.log(completedCount)
+    // TODO ŹLE LICZY UKONCZONE LEKCJE!!! (5 lekcja = 5pkt, a 1 lek = 1pkt coś z id nie tak)
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>DashboardScreen</Text>
+        <View style={styles.container}>
+            <Card style={styles.card}>
+                <Card.Content>
+                    <Text variant="titleLarge" style={styles.title}>
+                        Your Progress
+                    </Text>
+                    <Text variant="bodyLarge">Lessons Completed: {completedCount}/{totalLessons}</Text>
+                    <ProgressBar progress={progress} color="#6200EE" style={styles.progressBar} />
+                    <Text variant="bodySmall" style={styles.progressText}>
+                        {progress * 100}% Completed
+                    </Text>
+                </Card.Content>
+            </Card>
+
+            <View style={styles.chipContainer}>
+                <Chip icon="account-circle" style={styles.chip}>
+                    {difficultyLevel}
+                </Chip>
+            </View>
         </View>
     );
 }
 
-export default Index;
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: '#f8f9fa',
+    },
+    card: {
+        width: '100%',
+        marginBottom: 20,
+        padding: 10,
+    },
+    title: {
+        marginBottom: 10,
+    },
+    progressBar: {
+        marginTop: 10,
+        height: 8,
+        borderRadius: 5,
+    },
+    progressText: {
+        marginTop: 5,
+        color: '#6c757d',
+    },
+    chipContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    chip: {
+        backgroundColor: '#e3f2fd',
+        marginTop: 10,
+    },
+});
+
+export default Dashboard;
