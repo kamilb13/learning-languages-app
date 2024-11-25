@@ -1,16 +1,12 @@
-import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
-import { List, Button, IconButton, Tooltip, Menu } from "react-native-paper";
+import React, {useState} from "react";
+import {View, StyleSheet} from "react-native";
+import {List, Button, IconButton, Tooltip, Menu} from "react-native-paper";
 import {useLessonContext} from "../../LessonContext";
 
-const LessonsScreen = ({ navigation }) => {
-    const [lessonStatus, setLessonStatus] = useState({
-        "1": "not-started",
-        "2": "not-started",
-        "3": "not-started",
-        "4": "not-started",
-    });
+const LessonsScreen = ({navigation}) => {
 
+
+    // TODO to idzie z backendu w przyszlosci
     const lessons = [
         {
             id: "1",
@@ -86,17 +82,17 @@ const LessonsScreen = ({ navigation }) => {
         },
     ];
 
-    const { completeLesson } = useLessonContext();
+    const {completeLesson, lessonStatus, setLessonStatus} = useLessonContext(); // funkcja dodajaca lekcje do ukonczonych w context
     const statuses = ["not-started", "in-progress", "completed"];
-    const [menuVisible, setMenuVisible] = useState({});
+    // const [menuVisible, setMenuVisible] = useState({});
 
-    const openMenu = (lessonId) => {
-        setMenuVisible((prev) => ({ ...prev, [lessonId]: true }));
-    };
-
-    const closeMenu = (lessonId) => {
-        setMenuVisible((prev) => ({ ...prev, [lessonId]: false }));
-    };
+    // const openMenu = (lessonId) => {
+    //     setMenuVisible((prev) => ({ ...prev, [lessonId]: true }));
+    // };
+    //
+    // const closeMenu = (lessonId) => {
+    //     setMenuVisible((prev) => ({ ...prev, [lessonId]: false }));
+    // };
 
     const handleStatusChange = (lessonId, newStatus) => {
         setLessonStatus((prevStatus) => ({
@@ -107,7 +103,6 @@ const LessonsScreen = ({ navigation }) => {
             completeLesson(lessonId);
         }
 
-        closeMenu(lessonId);
     };
 
     const getStatusIcon = (status) => {
@@ -121,7 +116,7 @@ const LessonsScreen = ({ navigation }) => {
                 return "circle-outline";
         }
     };
-    // console.log(menuVisible);
+
     return (
         <View style={styles.container}>
             <List.Section>
@@ -131,40 +126,27 @@ const LessonsScreen = ({ navigation }) => {
                         title={lesson.name}
                         description={`Lesson ID: ${lesson.id}`}
                         left={() => (
-                            <Menu
-                                visible={menuVisible[lesson.id]}
-                                onDismiss={() => closeMenu(lesson.id)}
-                                anchor={
-                                    // <Tooltip title={`Status: ${lessonStatus[lesson.id]}`}>
-                                    <IconButton
-                                        icon={getStatusIcon(lessonStatus[lesson.id])}
-                                        iconColor={
-                                        lessonStatus[lesson.id] === "completed"
-                                            ? "green"
-                                            : lessonStatus[lesson.id] === "in-progress"
-                                                ? "orange"
-                                                : "gray"
-                                    }
-                                        onPress={() => openMenu(lesson.id)}
-                                    />
-                                    // </Tooltip>
+                            <IconButton
+                                icon={getStatusIcon(lessonStatus[lesson.id])}
+                                iconColor={
+                                    lessonStatus[lesson.id] === "completed"
+                                        ? "green"
+                                        : lessonStatus[lesson.id] === "in-progress"
+                                            ? "orange"
+                                            : "gray"
                                 }
-                            >
-                                {statuses.map((status) => (
-                                    <Menu.Item
-                                        key={status}
-                                        onPress={() => handleStatusChange(lesson.id, status)}
-                                        title={status.replace("-", " ").toUpperCase()}
-                                    />
-                                ))}
-                            </Menu>
+                            />
                         )}
                         right={() => (
                             <Button
                                 mode="contained"
-                                onPress={() =>
-                                    navigation.navigate("LessonDetail", { lesson })
-                                }
+                                onPress={() => {
+                                    navigation.navigate("LessonDetail", {lesson});
+                                    setLessonStatus((prevStatus) => ({
+                                        ...prevStatus,
+                                        [lesson.id]: "in-progress"
+                                    }))   // lesson.id + 1
+                                }}
                                 style={styles.startButton}
                             >
                                 Start
