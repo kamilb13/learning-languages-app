@@ -4,8 +4,6 @@ import { Button, Switch, Menu, Divider } from "react-native-paper";
 import { AuthContext } from "../../AuthContext";
 
 const AccountScreen = ({ navigation }) => {
-    const { handleAuthentication } = useContext(AuthContext);
-
     const [languagePreference, setLanguagePreference] = useState("English");
 
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
@@ -22,14 +20,6 @@ const AccountScreen = ({ navigation }) => {
         setLanguagePreference(value);
         closeMenu();
         console.log("Selected Language:", value);
-    };
-
-    const handleLogOut = () => {
-        handleAuthentication();
-        navigation.reset({
-            index: 0,
-            routes: [{ name: "AuthScreen" }],
-        });
     };
 
     return (
@@ -75,10 +65,6 @@ const AccountScreen = ({ navigation }) => {
                     />
                 </Menu>
             </View>
-
-            <Divider style={styles.divider} />
-
-            <Button mode="outlined" onPress={handleLogOut}>Log Out</Button>
         </View>
     );
 };
