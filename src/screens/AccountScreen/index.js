@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { Button, Switch, Menu, Divider } from "react-native-paper";
-import { AuthContext } from "../../AuthContext";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const AccountScreen = ({ navigation }) => {
     const [languagePreference, setLanguagePreference] = useState("English");

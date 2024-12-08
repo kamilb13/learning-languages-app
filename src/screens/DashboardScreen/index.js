@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, ProgressBar, Chip } from 'react-native-paper';
-import {useLessonContext} from "../../LessonContext";
+import {useLessonContext} from "../../contexts/LessonContext";
 
 function Dashboard({ navigation }) {
     const difficultyLevel = "Intermediate";

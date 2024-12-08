@@ -5,7 +5,7 @@ import { Modal, Button,Portal, Dialog, Paragraph, Provider } from "react-native-
 const ExerciseDetailScreen = ({ route, navigation }) => {
     const { name, tasks } = route.params;
     const [dialogVisible, setDialogVisible] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(10);
+    const [timeLeft, setTimeLeft] = useState(30);
 
     useEffect(() => {
         if (timeLeft <= 0) {

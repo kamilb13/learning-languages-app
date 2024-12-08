@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import {useLessonContext} from "../../LessonContext";
+import {useLessonContext} from "../../contexts/LessonContext";
 import {Button} from "react-native-paper";
 
 const LessonDetailScreen = ({ route, navigation }) => {

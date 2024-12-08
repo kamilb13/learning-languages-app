@@ -5,7 +5,7 @@ import DashboardScreen from "../../screens/DashboardScreen";
 import LessonsScreen from "../../screens/LessonsScreen";
 import ExercisesScreen from "../../screens/ExercisesScreen";
 import AccountScreen from "../../screens/AccountScreen";
-import {AuthContext} from "../../AuthContext";
+import {AuthContext} from "../../contexts/AuthContext";
 
 const Drawer = createDrawerNavigator();
 

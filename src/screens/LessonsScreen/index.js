@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {View, StyleSheet} from "react-native";
 import {List, Button, IconButton, Tooltip, Menu} from "react-native-paper";
-import {useLessonContext} from "../../LessonContext";
+import {useLessonContext} from "../../contexts/LessonContext";
 
 const LessonsScreen = ({navigation}) => {
     const { lessonStatus, setLessonStatus, lessons } = useLessonContext(); // funkcja dodajaca lekcje do ukonczonych w context
