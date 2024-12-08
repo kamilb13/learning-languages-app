@@ -4,6 +4,7 @@ import {useLessonContext} from "../../contexts/LessonContext";
 import {Button} from "react-native-paper";
 import {useUserContext} from "../../contexts/UserContext";
 
+
 const LessonDetailScreen = ({ route, navigation }) => {
     const lessonId = route.params.lesson.id;
     const tasks = route.params.lesson.tasks;

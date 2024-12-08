@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LessonContext = createContext();
+const LessonContext = createContext(null);
 
 export const LessonProvider = ({ children }) => {
     const totalLessons = 20;
