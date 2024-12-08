@@ -1,16 +1,25 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, ProgressBar, Chip } from 'react-native-paper';
 import {useLessonContext} from "../../contexts/LessonContext";
+import {useUserContext} from "../../contexts/UserContext";
 
 function Dashboard({ navigation }) {
     const { completedCount, lessonsCount } = useLessonContext();
     const difficultyLevel = completedCount > 3 ? "Intermediate" : "Beginner";
 
+    const {userInfo, setUserInfo} = useUserContext();
+
+    useEffect(() => {
+        setUserInfo((prev) => ({
+            ...prev,
+            userLevel: difficultyLevel
+        }))
+    }, [difficultyLevel]);
 
     const progress = completedCount/lessonsCount;
     //console.log(completedCount)
-
+    console.log(userInfo)
     return (
         <View style={styles.container}>
             <Card style={styles.card}>
