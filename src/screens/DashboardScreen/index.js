@@ -3,12 +3,14 @@ import { View, StyleSheet } from 'react-native';
 import { Card, Text, ProgressBar, Chip } from 'react-native-paper';
 import {useLessonContext} from "../../contexts/LessonContext";
 import {useUserContext} from "../../contexts/UserContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function Dashboard({ navigation }) {
-    const { completedCount, lessonsCount } = useLessonContext();
+    const { completedCount, lessonsCount, setCompletedLessons, setLessonStatus } = useLessonContext();
     const difficultyLevel = completedCount > 3 ? "Intermediate" : "Beginner";
 
     const {userInfo, setUserInfo} = useUserContext();
+
 
     useEffect(() => {
         setUserInfo((prev) => ({
@@ -17,9 +19,36 @@ function Dashboard({ navigation }) {
         }))
     }, [difficultyLevel]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                let value = await AsyncStorage.getItem('lessons');
+                value = JSON.parse(value);
+                console.log("odczytane dane z as ",value)
+                if (value !== null) {
+                    setCompletedLessons(value);
+                    // TODO pobrane lekcje z asynstorage są nie oznaczone jako zrobione !
+                    setLessonStatus((prevStatus) => {
+                        const updatedStatus = { ...prevStatus };
+                        console.log(updatedStatus)
+                        value.forEach((lessonId) => {
+                            updatedStatus[lessonId] = "completed";
+                        });
+
+                        return updatedStatus;
+                    });
+                }
+            } catch (e) {
+                console.log("Error fetching data from AsyncStorage:", e);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     const progress = completedCount/lessonsCount;
     //console.log(completedCount)
-    console.log(userInfo)
+    //console.log(userInfo)
     return (
         <View style={styles.container}>
             <Card style={styles.card}>

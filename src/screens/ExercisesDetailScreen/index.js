@@ -25,7 +25,7 @@ const ExerciseDetailScreen = ({route, navigation}) => {
             [id]: answer,
         }));
 
-        console.log(answers[id])
+        //console.log(answers[id])
         //console.log(id, answer)
 
     }

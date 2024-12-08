@@ -1,10 +1,12 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {View, StyleSheet} from "react-native";
 import {List, Button, IconButton, Tooltip, Menu} from "react-native-paper";
 import {useLessonContext} from "../../contexts/LessonContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LessonsScreen = ({navigation}) => {
     const { lessonStatus, setLessonStatus, lessons } = useLessonContext(); // funkcja dodajaca lekcje do ukonczonych w context
+
 
     const getStatusIcon = (status) => {
         switch (status) {

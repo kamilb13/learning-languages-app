@@ -1,9 +1,9 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, {createContext, useState, useContext, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LessonContext = createContext(null);
 
-export const LessonProvider = ({ children }) => {
+export const LessonProvider = ({children}) => {
     const totalLessons = 20;
     const [completedLessons, setCompletedLessons] = useState([]);
     const [lessonStatus, setLessonStatus] = useState({
@@ -93,7 +93,23 @@ export const LessonProvider = ({ children }) => {
         },
     ];
 
-    const completeLesson = (lessonId) => {
+    useEffect(() => {
+        const saveData = async () => {
+            try {
+                await AsyncStorage.setItem('lessons', JSON.stringify(completedLessons));
+                console.log("zapis bez strngify ", completedLessons);
+                console.log("zapis", JSON.stringify(completedLessons));
+            } catch (e) {
+                console.log("Error saving data to AsyncStorage:", e);
+            }
+        };
+
+        saveData();
+    }, [completedLessons]);
+
+
+
+    const completeLesson = async (lessonId) => {
         if (!completedLessons.includes(lessonId)) {
             setCompletedLessons((prev) => [...prev, lessonId]);
         }
@@ -103,7 +119,17 @@ export const LessonProvider = ({ children }) => {
     const lessonsCount = lessons.length;
 
     return (
-        <LessonContext.Provider value={{ totalLessons, completedLessons, completeLesson, completedCount, lessonStatus, setLessonStatus, lessons, lessonsCount }}>
+        <LessonContext.Provider value={{
+            totalLessons,
+            completedLessons,
+            completeLesson,
+            completedCount,
+            lessonStatus,
+            setLessonStatus,
+            lessons,
+            lessonsCount,
+            setCompletedLessons
+        }}>
             {children}
         </LessonContext.Provider>
     );
