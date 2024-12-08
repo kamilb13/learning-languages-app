@@ -2,11 +2,12 @@ import React, { useContext, useState } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { Button, Switch, Menu, Divider } from "react-native-paper";
 import { AuthContext } from "../../contexts/AuthContext";
+import {useUserContext} from "../../contexts/UserContext";
 
 const AccountScreen = ({ navigation }) => {
     const [languagePreference, setLanguagePreference] = useState("English");
-
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+    const {userInfo, setUserInfo} = useUserContext();
 
     const toggleNotifications = () => {
         setNotificationsEnabled(!notificationsEnabled);
@@ -17,6 +18,10 @@ const AccountScreen = ({ navigation }) => {
     const openMenu = () => setMenuVisible(true);
     const closeMenu = () => setMenuVisible(false);
     const handleLanguageChange = (value) => {
+        setUserInfo((prev) => ({
+            ...prev,
+            languagePreferences: value
+        }))
         setLanguagePreference(value);
         closeMenu();
         console.log("Selected Language:", value);

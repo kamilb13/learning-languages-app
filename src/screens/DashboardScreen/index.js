@@ -4,11 +4,12 @@ import { Card, Text, ProgressBar, Chip } from 'react-native-paper';
 import {useLessonContext} from "../../contexts/LessonContext";
 
 function Dashboard({ navigation }) {
-    const difficultyLevel = "Intermediate";
-
     const { completedCount, lessonsCount } = useLessonContext();
+    const difficultyLevel = completedCount > 3 ? "Intermediate" : "Beginner";
+
+
     const progress = completedCount/lessonsCount;
-    console.log(completedCount)
+    //console.log(completedCount)
 
     return (
         <View style={styles.container}>

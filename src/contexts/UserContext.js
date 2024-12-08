@@ -8,7 +8,9 @@ export const useUserContext = () => {
 
 export const UserProvider = ({ children }) => {
     const [userInfo, setUserInfo] = useState({
-        "languagePreferences": ""
+        "languagePreferences": "Polish",
+        "lessonHistory": [],
+        "userLevel": ""
     });
 
     return (
