@@ -1,16 +1,49 @@
-import React, { useState, useContext } from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { AuthContext } from "../../contexts/AuthContext";
 import { TextInput, Button} from 'react-native-paper';
+import * as SecureStore from 'expo-secure-store';
 
 const AuthScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { handleAuthentication, isLogin, setIsLogin, errorMessage } = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
 
     const handleLogIn = () => {
-        handleAuthentication(email, password, navigation);
+        handleAuthentication(email, password, navigation)
+        setEmail('');
+        setPassword('');
+
+        const saveCredentialsToSecureStore = async (userData) => {
+            try {
+                await SecureStore.setItemAsync('user', JSON.stringify(userData));
+                console.log('User session saved in SecureStore');
+            } catch (error) {
+                console.error('Error saving user session to SecureStore', error);
+            }
+        };
+
+        saveCredentialsToSecureStore(user);
+
     };
+
+    useEffect(() => {
+        const checkUserSession = async () => {
+            try {
+                const storedUser = await SecureStore.getItemAsync('user');
+                if (storedUser) {
+                    const parsedUser = JSON.parse(storedUser);
+                    setUser(parsedUser);
+                }
+            } catch (e) {
+                console.log('Error loading user data from SecureStore:', e);
+            }
+        };
+
+        checkUserSession();
+
+    }, []);
 
     return (
         <View style={styles.container}>

@@ -9,7 +9,7 @@ export const LessonProvider = ({children}) => {
     const [completedCount, setCompletedCount] = useState(0);
     //let completedCount = completedLessons.length;
 
-    console.log("FIRST")
+    //console.log("FIRST")
     const [lessonStatus, setLessonStatus] = useState({
         "1": "not-started",
         "2": "not-started",

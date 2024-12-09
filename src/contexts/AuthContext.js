@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, {createContext, useState, useEffect, useContext} from 'react';
 import {
     createUserWithEmailAndPassword,
     getAuth, getReactNativePersistence, initializeAuth,
@@ -6,6 +6,7 @@ import {
     signInWithEmailAndPassword,
     signOut
 } from '@firebase/auth';
+import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeApp } from '@firebase/app';
 import {
@@ -29,10 +30,13 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage)
+    persistence: getReactNativePersistence(SecureStore)
 });
 export const AuthContext = createContext();
 
+// export const useAuthContext = () => {
+//     return useContext(AuthContext);
+// };
 
 export const AuthProvider = ({ children }) => {
     const [isLogin, setIsLogin] = useState(true);
@@ -48,13 +52,25 @@ export const AuthProvider = ({ children }) => {
     }, [auth]);
 
 
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (authUser) => {
+            if (authUser) {
+                setUser(authUser);
+            } else {
+                setUser(null);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+
     const handleAuthentication = async (email, password, navigation) => {
         setErrorMessage('');
         try {
             if (user) {
+                //setUser(null);
                 await signOut(auth);
+                await SecureStore.deleteItemAsync('user');
                 console.log('User logged out successfully!');
-                setUser(null);
             } else {
                 if (isLogin) {
                     await signInWithEmailAndPassword(auth, email, password);
@@ -89,7 +105,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
     return (
-        <AuthContext.Provider value={{ user, handleAuthentication, isLogin, setIsLogin, errorMessage }}>
+        <AuthContext.Provider value={{ user, setUser, handleAuthentication, isLogin, setIsLogin, errorMessage }}>
             {children}
         </AuthContext.Provider>
     );

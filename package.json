@@ -25,7 +25,8 @@
     "react-native-config": "^1.5.3",
     "react-native-dotenv": "^3.4.11",
     "react-native-paper": "^5.12.5",
-    "react-native-reanimated": "~3.10.1"
+    "react-native-reanimated": "~3.10.1",
+    "expo-secure-store": "~13.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

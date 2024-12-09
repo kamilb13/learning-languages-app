@@ -1,9 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, ProgressBar, Chip } from 'react-native-paper';
 import {useLessonContext} from "../../contexts/LessonContext";
 import {useUserContext} from "../../contexts/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from 'expo-secure-store';
+import {AuthContext} from "../../contexts/AuthContext";
 
 function Dashboard({ navigation }) {
     const { lessonsCount, setCompletedLessons, setLessonStatus } = useLessonContext();
@@ -11,7 +13,7 @@ function Dashboard({ navigation }) {
     const difficultyLevel = completedCount > 3 ? "Intermediate" : "Beginner";
 
     const {userInfo, setUserInfo} = useUserContext();
-
+    const {user} = useContext(AuthContext);
 
     useEffect(() => {
         setUserInfo((prev) => ({
@@ -20,49 +22,28 @@ function Dashboard({ navigation }) {
         }))
     }, [difficultyLevel]);
 
-//     const clearAsyncStorage = async () => {
-//         try {
-//             await AsyncStorage.clear();
-//             console.log("AsyncStorage został zresetowany");
-//         } catch (error) {
-//             console.error("Błąd podczas resetowania AsyncStorage", error);
-//         }
-//     };
-//
-//     clearAsyncStorage();
 
+    // const saveCredentialsToSecureStore = async (userData) => {
+    //     try {
+    //         await SecureStore.setItemAsync('user', JSON.stringify(userData));
+    //         console.log('User session saved in SecureStore');
+    //     } catch (error) {
+    //         console.error('Error saving user session to SecureStore', error);
+    //     }
+    // };
 
     useEffect(() => {
+        //saveCredentialsToSecureStore(user);
+
+        //console.log("ZALOGOWANY USER - ",user)
+
         const fetchData = async () => {
             try {
-                //let value = await AsyncStorage.getItem('lessons');
                 let status = await AsyncStorage.getItem('status');
-                // TODO WYCZYSCIC ASYNC STORAGE I PO STATUSACH LICZYC SKONCZONE LEKCJE
                 status = JSON.parse(status);
-                console.log("odczytane status z as ",status)
                 if (status !== null) {
-                    //setCompletedLessons(value);
                     setLessonStatus(status);
-                    // TODO NIE DZIALA LICZENIE I TE STATUSY
                     setCompletedCount(Object.values(status).filter(v => v === "completed").length)
-                    //completedCount = ;
-                    console.log("lekcje ukonczone ", completedCount)
-
-                    // completedCount = status.forEach((v) => {
-                    //     if(v === "completed"){
-                    //         completedCount++;
-                    //     }
-                    // });
-                    // TODO pobrane lekcje z asynstorage są nie oznaczone jako zrobione !
-                    // setLessonStatus((prevStatus) => {
-                    //     const updatedStatus = { ...prevStatus };
-                    //     console.log(updatedStatus)
-                    //     value.forEach((lessonId) => {
-                    //         updatedStatus[lessonId] = "completed";
-                    //     });
-                    //
-                    //     return updatedStatus;
-                    // });
                 }
             } catch (e) {
                 console.log("Error fetching data from AsyncStorage:", e);
@@ -71,6 +52,21 @@ function Dashboard({ navigation }) {
 
         fetchData();
     }, []);
+
+    // const loadCredentialsFromSecureStore = async () => {
+    //     try {
+    //         const email = await SecureStore.getItemAsync('userEmail');
+    //         const password = await SecureStore.getItemAsync('userPassword');
+    //         console.log('Załadowane dane:', email, password);
+    //     } catch (error) {
+    //         console.error('Błąd podczas odczytu danych z SecureStore', error);
+    //     }
+    // };
+    //
+    // useEffect(() => {
+    //     loadCredentialsFromSecureStore();
+    // }, []);
+
 
     useEffect(()=>{
         console.log("UKONCZONE",completedCount)
