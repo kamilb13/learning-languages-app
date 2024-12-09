@@ -7,9 +7,10 @@ import * as SecureStore from 'expo-secure-store';
 const AuthScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
     const { handleAuthentication, isLogin, setIsLogin, errorMessage } = useContext(AuthContext);
     const { user, setUser } = useContext(AuthContext);
-    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if(user){

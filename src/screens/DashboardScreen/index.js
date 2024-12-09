@@ -8,8 +8,7 @@ import * as SecureStore from 'expo-secure-store';
 import {AuthContext} from "../../contexts/AuthContext";
 
 function Dashboard({ navigation }) {
-    const { lessonsCount, setCompletedLessons, setLessonStatus, lessonStatus } = useLessonContext();
-    const { completedCount, setCompletedCount } = useLessonContext();
+    const { lessonsCount, setCompletedLessons, setLessonStatus, lessonStatus, completedCount, setCompletedCount } = useLessonContext();
     const difficultyLevel = completedCount > 3 ? "Intermediate" : "Beginner";
 
     const {userInfo, setUserInfo} = useUserContext();
@@ -21,40 +20,6 @@ function Dashboard({ navigation }) {
             userLevel: difficultyLevel
         }))
     }, [difficultyLevel]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const status = await AsyncStorage.getItem('status');
-                const parsedStatus = JSON.parse(status);
-                if (status !== null) {
-                    setLessonStatus(parsedStatus);
-                    const newCompletedCount = Object.values(parsedStatus).filter(v => v === "completed").length;
-                    setCompletedCount(newCompletedCount);
-                    console.log("odczytane statusy\n", parsedStatus);
-                    console.log("obliczony completed count - ", newCompletedCount);
-                }
-            } catch (e) {
-                console.log("Error fetching data from AsyncStorage: ", e);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    // const loadCredentialsFromSecureStore = async () => {
-    //     try {
-    //         const email = await SecureStore.getItemAsync('userEmail');
-    //         const password = await SecureStore.getItemAsync('userPassword');
-    //         console.log('Załadowane dane:', email, password);
-    //     } catch (error) {
-    //         console.error('Błąd podczas odczytu danych z SecureStore', error);
-    //     }
-    // };
-    //
-    // useEffect(() => {
-    //     loadCredentialsFromSecureStore();
-    // }, []);
 
 
     useEffect(()=>{

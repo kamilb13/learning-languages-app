@@ -7,9 +7,7 @@ export const LessonProvider = ({children}) => {
     const totalLessons = 20;
     const [completedLessons, setCompletedLessons] = useState([]);
     const [completedCount, setCompletedCount] = useState(0);
-    //let completedCount = completedLessons.length;
 
-    //console.log("FIRST")
     const [lessonStatus, setLessonStatus] = useState({
         "1": "not-started",
         "2": "not-started",
@@ -98,6 +96,26 @@ export const LessonProvider = ({children}) => {
     ];
 
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const status = await AsyncStorage.getItem('status');
+                const parsedStatus = JSON.parse(status);
+                if (status !== null) {
+                    setLessonStatus(parsedStatus);
+                    const newCompletedCount = Object.values(parsedStatus).filter(v => v === "completed").length;
+                    setCompletedCount(newCompletedCount);
+                    console.log("odczytane statusy\n", parsedStatus);
+                    console.log("obliczony completed count - ", newCompletedCount);
+                }
+            } catch (e) {
+                console.log("Error fetching data from AsyncStorage: ", e);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    useEffect(() => {
         const saveData = async () => {
             try {
                 await AsyncStorage.setItem('status', JSON.stringify(lessonStatus));
@@ -106,7 +124,7 @@ export const LessonProvider = ({children}) => {
                 console.log("Error saving data to AsyncStorage:", e);
             }
         };
-
+        console.log("wykonuje zapis pustych? ", lessonStatus)
         saveData();
     }, [lessonStatus]);
 
