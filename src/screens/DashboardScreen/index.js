@@ -26,12 +26,13 @@ function Dashboard({ navigation }) {
         const fetchData = async () => {
             try {
                 const status = await AsyncStorage.getItem('status');
+                const parsedStatus = JSON.parse(status);
                 if (status !== null) {
-                    setLessonStatus(JSON.parse(status));
-                    const newCompletedCount = Object.values(status).filter(v => v === "completed").length;
+                    setLessonStatus(parsedStatus);
+                    const newCompletedCount = Object.values(parsedStatus).filter(v => v === "completed").length;
                     setCompletedCount(newCompletedCount);
-                    console.log("odczytane statusy ", status);
-                    console.log("obliczony completed count ", newCompletedCount);
+                    console.log("odczytane statusy\n", parsedStatus);
+                    console.log("obliczony completed count - ", newCompletedCount);
                 }
             } catch (e) {
                 console.log("Error fetching data from AsyncStorage: ", e);

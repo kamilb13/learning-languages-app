@@ -54,22 +54,12 @@ export const AuthProvider = ({ children }) => {
         return () => unsubscribe();
     }, [auth]);
 
-
-    // useEffect(() => {
-    //     const unsubscribe = onAuthStateChanged(auth, (user) => {
-    //         setUser(user);
-    //     });
-    //
-    //     return () => unsubscribe();
-    // }, [auth]);
-
     const handleAuthentication = async (email, password, navigation) => {
         setErrorMessage('');
         try {
             if (user) {
                 setUser(null);
-                await signOut(auth); // sam ustawia user = null????
-                //await SecureStore.deleteItemAsync('user');
+                await signOut(auth);
                 console.log('User logged out successfully!');
             } else {
                 if (isLogin) {
