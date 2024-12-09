@@ -6,7 +6,8 @@ import {useUserContext} from "../../contexts/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function Dashboard({ navigation }) {
-    const { completedCount, lessonsCount, setCompletedLessons, setLessonStatus } = useLessonContext();
+    const { lessonsCount, setCompletedLessons, setLessonStatus } = useLessonContext();
+    const { completedCount, setCompletedCount } = useLessonContext();
     const difficultyLevel = completedCount > 3 ? "Intermediate" : "Beginner";
 
     const {userInfo, setUserInfo} = useUserContext();
@@ -19,24 +20,49 @@ function Dashboard({ navigation }) {
         }))
     }, [difficultyLevel]);
 
+//     const clearAsyncStorage = async () => {
+//         try {
+//             await AsyncStorage.clear();
+//             console.log("AsyncStorage został zresetowany");
+//         } catch (error) {
+//             console.error("Błąd podczas resetowania AsyncStorage", error);
+//         }
+//     };
+//
+//     clearAsyncStorage();
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                let value = await AsyncStorage.getItem('lessons');
-                value = JSON.parse(value);
-                console.log("odczytane dane z as ",value)
-                if (value !== null) {
-                    setCompletedLessons(value);
-                    // TODO pobrane lekcje z asynstorage są nie oznaczone jako zrobione !
-                    setLessonStatus((prevStatus) => {
-                        const updatedStatus = { ...prevStatus };
-                        console.log(updatedStatus)
-                        value.forEach((lessonId) => {
-                            updatedStatus[lessonId] = "completed";
-                        });
+                //let value = await AsyncStorage.getItem('lessons');
+                let status = await AsyncStorage.getItem('status');
+                // TODO WYCZYSCIC ASYNC STORAGE I PO STATUSACH LICZYC SKONCZONE LEKCJE
+                status = JSON.parse(status);
+                console.log("odczytane status z as ",status)
+                if (status !== null) {
+                    //setCompletedLessons(value);
+                    setLessonStatus(status);
+                    // TODO NIE DZIALA LICZENIE I TE STATUSY
+                    setCompletedCount(Object.values(status).filter(v => v === "completed").length)
+                    //completedCount = ;
+                    console.log("lekcje ukonczone ", completedCount)
 
-                        return updatedStatus;
-                    });
+                    // completedCount = status.forEach((v) => {
+                    //     if(v === "completed"){
+                    //         completedCount++;
+                    //     }
+                    // });
+                    // TODO pobrane lekcje z asynstorage są nie oznaczone jako zrobione !
+                    // setLessonStatus((prevStatus) => {
+                    //     const updatedStatus = { ...prevStatus };
+                    //     console.log(updatedStatus)
+                    //     value.forEach((lessonId) => {
+                    //         updatedStatus[lessonId] = "completed";
+                    //     });
+                    //
+                    //     return updatedStatus;
+                    // });
                 }
             } catch (e) {
                 console.log("Error fetching data from AsyncStorage:", e);
@@ -45,6 +71,10 @@ function Dashboard({ navigation }) {
 
         fetchData();
     }, []);
+
+    useEffect(()=>{
+        console.log("UKONCZONE",completedCount)
+    }, [completedCount])
 
     const progress = completedCount/lessonsCount;
     //console.log(completedCount)

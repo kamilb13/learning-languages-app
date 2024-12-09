@@ -6,6 +6,10 @@ const LessonContext = createContext(null);
 export const LessonProvider = ({children}) => {
     const totalLessons = 20;
     const [completedLessons, setCompletedLessons] = useState([]);
+    const [completedCount, setCompletedCount] = useState(0);
+    //let completedCount = completedLessons.length;
+
+    console.log("FIRST")
     const [lessonStatus, setLessonStatus] = useState({
         "1": "not-started",
         "2": "not-started",
@@ -96,26 +100,24 @@ export const LessonProvider = ({children}) => {
     useEffect(() => {
         const saveData = async () => {
             try {
-                await AsyncStorage.setItem('lessons', JSON.stringify(completedLessons));
-                console.log("zapis bez strngify ", completedLessons);
-                console.log("zapis", JSON.stringify(completedLessons));
+                await AsyncStorage.setItem('status', JSON.stringify(lessonStatus));
             } catch (e) {
                 console.log("Error saving data to AsyncStorage:", e);
             }
         };
 
         saveData();
-    }, [completedLessons]);
+    }, [lessonStatus]);
 
 
 
     const completeLesson = async (lessonId) => {
         if (!completedLessons.includes(lessonId)) {
             setCompletedLessons((prev) => [...prev, lessonId]);
+            setCompletedCount((prev) => prev+1)
         }
     };
 
-    const completedCount = completedLessons.length;
     const lessonsCount = lessons.length;
 
     return (
@@ -123,12 +125,13 @@ export const LessonProvider = ({children}) => {
             totalLessons,
             completedLessons,
             completeLesson,
-            completedCount,
             lessonStatus,
             setLessonStatus,
             lessons,
             lessonsCount,
-            setCompletedLessons
+            setCompletedLessons,
+            completedCount,
+            setCompletedCount
         }}>
             {children}
         </LessonContext.Provider>
