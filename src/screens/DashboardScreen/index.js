@@ -8,7 +8,7 @@ import * as SecureStore from 'expo-secure-store';
 import {AuthContext} from "../../contexts/AuthContext";
 
 function Dashboard({ navigation }) {
-    const { lessonsCount, setCompletedLessons, setLessonStatus } = useLessonContext();
+    const { lessonsCount, setCompletedLessons, setLessonStatus, lessonStatus } = useLessonContext();
     const { completedCount, setCompletedCount } = useLessonContext();
     const difficultyLevel = completedCount > 3 ? "Intermediate" : "Beginner";
 
@@ -22,31 +22,19 @@ function Dashboard({ navigation }) {
         }))
     }, [difficultyLevel]);
 
-
-    // const saveCredentialsToSecureStore = async (userData) => {
-    //     try {
-    //         await SecureStore.setItemAsync('user', JSON.stringify(userData));
-    //         console.log('User session saved in SecureStore');
-    //     } catch (error) {
-    //         console.error('Error saving user session to SecureStore', error);
-    //     }
-    // };
-
     useEffect(() => {
-        //saveCredentialsToSecureStore(user);
-
-        //console.log("ZALOGOWANY USER - ",user)
-
         const fetchData = async () => {
             try {
-                let status = await AsyncStorage.getItem('status');
-                status = JSON.parse(status);
+                const status = await AsyncStorage.getItem('status');
                 if (status !== null) {
-                    setLessonStatus(status);
-                    setCompletedCount(Object.values(status).filter(v => v === "completed").length)
+                    setLessonStatus(JSON.parse(status));
+                    const newCompletedCount = Object.values(status).filter(v => v === "completed").length;
+                    setCompletedCount(newCompletedCount);
+                    console.log("odczytane statusy ", status);
+                    console.log("obliczony completed count ", newCompletedCount);
                 }
             } catch (e) {
-                console.log("Error fetching data from AsyncStorage:", e);
+                console.log("Error fetching data from AsyncStorage: ", e);
             }
         };
 

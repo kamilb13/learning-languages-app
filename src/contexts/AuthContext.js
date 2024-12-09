@@ -29,8 +29,11 @@ const firebaseConfig = {
     measurementId: FIREBASE_MEASUREMENT_ID
 };
 const app = initializeApp(firebaseConfig);
+// const auth = initializeAuth(app, {
+//     persistence: getReactNativePersistence(SecureStore)
+// });
 const auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(SecureStore)
+    persistence: getReactNativePersistence(AsyncStorage)
 });
 export const AuthContext = createContext();
 
@@ -52,30 +55,27 @@ export const AuthProvider = ({ children }) => {
     }, [auth]);
 
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (authUser) => {
-            if (authUser) {
-                setUser(authUser);
-            } else {
-                setUser(null);
-            }
-        });
-        return () => unsubscribe();
-    }, []);
+    // useEffect(() => {
+    //     const unsubscribe = onAuthStateChanged(auth, (user) => {
+    //         setUser(user);
+    //     });
+    //
+    //     return () => unsubscribe();
+    // }, [auth]);
 
     const handleAuthentication = async (email, password, navigation) => {
         setErrorMessage('');
         try {
             if (user) {
-                //setUser(null);
-                await signOut(auth);
-                await SecureStore.deleteItemAsync('user');
+                setUser(null);
+                await signOut(auth); // sam ustawia user = null????
+                //await SecureStore.deleteItemAsync('user');
                 console.log('User logged out successfully!');
             } else {
                 if (isLogin) {
                     await signInWithEmailAndPassword(auth, email, password);
                     console.log('User signed in successfully!');
-                    navigation.navigate('Main');
+                    // navigation.navigate('Main');
                 } else {
                     await createUserWithEmailAndPassword(auth, email, password);
                     console.log('User created successfully!');

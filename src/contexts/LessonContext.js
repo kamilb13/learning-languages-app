@@ -101,6 +101,7 @@ export const LessonProvider = ({children}) => {
         const saveData = async () => {
             try {
                 await AsyncStorage.setItem('status', JSON.stringify(lessonStatus));
+                console.log("Zapisane statusy lekcji\n ",lessonStatus)
             } catch (e) {
                 console.log("Error saving data to AsyncStorage:", e);
             }

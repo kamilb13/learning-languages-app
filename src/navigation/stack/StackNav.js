@@ -16,7 +16,7 @@ const StackNav = () => {
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="AuthScreen">
-                {/*<Stack.Screen name="AuthScreen" component={AuthScreen} options={options} />*/}
+                <Stack.Screen name="AuthScreen" component={AuthScreen} options={options} />
                 <Stack.Screen name="Main" component={MainDrawer} options={options} />
                 <Stack.Screen name="LessonDetail" component={LessonDetailScreen} />
                 <Stack.Screen name="ExerciseDetail" component={ExerciseDetailScreen} />

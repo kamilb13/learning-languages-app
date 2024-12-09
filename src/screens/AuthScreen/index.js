@@ -9,41 +9,25 @@ const AuthScreen = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const { handleAuthentication, isLogin, setIsLogin, errorMessage } = useContext(AuthContext);
     const { user, setUser } = useContext(AuthContext);
-
-    const handleLogIn = () => {
-        handleAuthentication(email, password, navigation)
-        setEmail('');
-        setPassword('');
-
-        const saveCredentialsToSecureStore = async (userData) => {
-            try {
-                await SecureStore.setItemAsync('user', JSON.stringify(userData));
-                console.log('User session saved in SecureStore');
-            } catch (error) {
-                console.error('Error saving user session to SecureStore', error);
-            }
-        };
-
-        saveCredentialsToSecureStore(user);
-
-    };
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const checkUserSession = async () => {
-            try {
-                const storedUser = await SecureStore.getItemAsync('user');
-                if (storedUser) {
-                    const parsedUser = JSON.parse(storedUser);
-                    setUser(parsedUser);
-                }
-            } catch (e) {
-                console.log('Error loading user data from SecureStore:', e);
-            }
-        };
+        if(user){
+            navigation.navigate('Main');
+        }
+    }, [user]);
 
-        checkUserSession();
-
-    }, []);
+    const handleLogIn = async () => {
+        if (!email || !password) {
+            alert('Please fill in all fields.');
+            return;
+        }
+        setLoading(true);
+        await handleAuthentication(email, password, navigation);
+        setLoading(false);
+        setEmail('');
+        setPassword('');
+    };
 
     return (
         <View style={styles.container}>
@@ -68,9 +52,10 @@ const AuthScreen = ({ navigation }) => {
                 style={styles.input}
             />
 
-            <Button mode="contained" onPress={handleLogIn} style={styles.button}>
+            <Button mode="contained" onPress={handleLogIn} disabled={loading} loading={loading} style={styles.button}>
                 {isLogin ? 'Zaloguj się' : 'Zarejestruj się'}
             </Button>
+
 
             <Button mode="text" onPress={() => setIsLogin(!isLogin)} style={styles.toggleButton}>
                 {isLogin ? "Nie masz konta? Zarejestruj się" : "Masz już konto? Zaloguj się"}
@@ -85,7 +70,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
-        backgroundColor: '#f9f9f9', // Delikatne tło
+        backgroundColor: '#f9f9f9',
     },
     headerText: {
         fontSize: 24,
