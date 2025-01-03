@@ -1,7 +1,7 @@
 import React, {createContext, useState, useEffect, useContext} from 'react';
 import {
     createUserWithEmailAndPassword,
-    getAuth, getReactNativePersistence, initializeAuth,
+    getReactNativePersistence, initializeAuth,
     onAuthStateChanged,
     signInWithEmailAndPassword,
     signOut
@@ -18,6 +18,7 @@ import {
     FIREBASE_PROJECT_ID,
     FIREBASE_STORAGE_BUCKET
 } from "@env";
+import { doc, setDoc, getFirestore } from '@firebase/firestore';
 
 const firebaseConfig = {
     apiKey: FIREBASE_API_KEY,
@@ -32,11 +33,13 @@ const app = initializeApp(firebaseConfig);
 const auth = initializeAuth(app, {
     persistence: getReactNativePersistence(AsyncStorage)
 });
+const db = getFirestore(app);
+
 export const AuthContext = createContext();
 
-// export const useAuthContext = () => {
-//     return useContext(AuthContext);
-// };
+export const useAuthContext = () => {
+    return useContext(AuthContext);
+};
 
 export const AuthProvider = ({ children }) => {
     const [isLogin, setIsLogin] = useState(true);
@@ -51,7 +54,7 @@ export const AuthProvider = ({ children }) => {
         return () => unsubscribe();
     }, [auth]);
 
-    const handleAuthentication = async (email, password, navigation) => {
+    const handleAuthentication = async (email, password) => {
         setErrorMessage('');
         try {
             if (user) {
@@ -62,10 +65,19 @@ export const AuthProvider = ({ children }) => {
                 if (isLogin) {
                     await signInWithEmailAndPassword(auth, email, password);
                     console.log('User signed in successfully!');
-                    // navigation.navigate('Main');
                 } else {
-                    await createUserWithEmailAndPassword(auth, email, password);
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const newUser = userCredential.user;                    c
                     console.log('User created successfully!');
+                    console.log(user)
+                    try {
+                        await setDoc(doc(db, "users", newUser.uid), {
+                            email: email
+                        });
+                        console.log("Document written with ID: ", user.uid);
+                    } catch (e) {
+                        console.error("Error adding document user: ", e);
+                    }
                 }
             }
         } catch (error) {
@@ -92,7 +104,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
     return (
-        <AuthContext.Provider value={{ user, setUser, handleAuthentication, isLogin, setIsLogin, errorMessage }}>
+        <AuthContext.Provider value={{ user, setUser, handleAuthentication, isLogin, setIsLogin, errorMessage, db }}>
             {children}
         </AuthContext.Provider>
     );

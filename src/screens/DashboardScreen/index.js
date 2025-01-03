@@ -1,18 +1,14 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, ProgressBar, Chip } from 'react-native-paper';
 import {useLessonContext} from "../../contexts/LessonContext";
 import {useUserContext} from "../../contexts/UserContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as SecureStore from 'expo-secure-store';
-import {AuthContext} from "../../contexts/AuthContext";
 
 function Dashboard({ navigation }) {
-    const { lessonsCount, setCompletedLessons, setLessonStatus, lessonStatus, completedCount, setCompletedCount } = useLessonContext();
+    const { lessonsCount, completedCount } = useLessonContext();
     const difficultyLevel = completedCount > 3 ? "Intermediate" : "Beginner";
 
     const {userInfo, setUserInfo} = useUserContext();
-    const {user} = useContext(AuthContext);
 
     useEffect(() => {
         setUserInfo((prev) => ({
@@ -21,14 +17,8 @@ function Dashboard({ navigation }) {
         }))
     }, [difficultyLevel]);
 
-
-    useEffect(()=>{
-        console.log("UKONCZONE",completedCount)
-    }, [completedCount])
-
     const progress = completedCount/lessonsCount;
-    //console.log(completedCount)
-    //console.log(userInfo)
+
     return (
         <View style={styles.container}>
             <Card style={styles.card}>

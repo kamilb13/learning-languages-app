@@ -1,11 +1,10 @@
-import React, {useContext, useEffect} from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useEffect} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 import {useLessonContext} from "../../contexts/LessonContext";
 import {Button} from "react-native-paper";
 import {useUserContext} from "../../contexts/UserContext";
 
-
-const LessonDetailScreen = ({ route, navigation }) => {
+const LessonDetailScreen = ({route, navigation}) => {
     const lessonId = route.params.lesson.id;
     const tasks = route.params.lesson.tasks;
     const name = route.params.lesson.name;
@@ -19,6 +18,7 @@ const LessonDetailScreen = ({ route, navigation }) => {
             lessonHistory: [...prev.lessonHistory, lessonId] // Zaczete lekcje, nie skonczone!
         }))
     }, [completeLesson]);
+
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Numer of lesson: {lessonId}</Text>

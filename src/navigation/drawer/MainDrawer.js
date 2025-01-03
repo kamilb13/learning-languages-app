@@ -5,17 +5,22 @@ import DashboardScreen from "../../screens/DashboardScreen";
 import LessonsScreen from "../../screens/LessonsScreen";
 import ExercisesScreen from "../../screens/ExercisesScreen";
 import AccountScreen from "../../screens/AccountScreen";
-import {AuthContext} from "../../contexts/AuthContext";
+import {AuthContext, useAuthContext} from "../../contexts/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useLessonContext} from "../../contexts/LessonContext";
 
 const Drawer = createDrawerNavigator();
 
 const CustomDrawerContent = (props) => {
-    const {handleAuthentication} = useContext(AuthContext);
-    const handleLogOut = () => {
+    const {handleAuthentication} = useAuthContext();
+
+    const handleLogOut = async () => {
+
+        await AsyncStorage.clear();
         handleAuthentication();
         props.navigation.reset({
             index: 0,
-            routes: [{ name: "AuthScreen" }],
+            routes: [{name: "AuthScreen"}],
         });
     };
 

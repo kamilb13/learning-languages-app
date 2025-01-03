@@ -7,13 +7,13 @@ import UserProvider from "./src/contexts/UserContext";
 export default function App() {
     return (
         <PaperProvider>
-            <LessonProvider>
-                <AuthProvider>
+            <AuthProvider>
+                <LessonProvider>
                     <UserProvider>
                         <StackNav/>
                     </UserProvider>
-                </AuthProvider>
-            </LessonProvider>
+                </LessonProvider>
+            </AuthProvider>
         </PaperProvider>
     );
 }

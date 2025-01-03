@@ -24,7 +24,7 @@ const AuthScreen = ({ navigation }) => {
             return;
         }
         setLoading(true);
-        await handleAuthentication(email, password, navigation);
+        await handleAuthentication(email, password);
         setLoading(false);
         setEmail('');
         setPassword('');
@@ -33,9 +33,7 @@ const AuthScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
-
             <Text style={styles.headerText}>{isLogin ? 'Logowanie' : 'Rejestracja'}</Text>
-
             <TextInput
                 label="Email"
                 value={email}
@@ -44,7 +42,6 @@ const AuthScreen = ({ navigation }) => {
                 keyboardType="email-address"
                 autoCapitalize="none"
             />
-
             <TextInput
                 label="Hasło"
                 value={password}
@@ -52,12 +49,9 @@ const AuthScreen = ({ navigation }) => {
                 secureTextEntry
                 style={styles.input}
             />
-
             <Button mode="contained" onPress={handleLogIn} disabled={loading} loading={loading} style={styles.button}>
                 {isLogin ? 'Zaloguj się' : 'Zarejestruj się'}
             </Button>
-
-
             <Button mode="text" onPress={() => setIsLogin(!isLogin)} style={styles.toggleButton}>
                 {isLogin ? "Nie masz konta? Zarejestruj się" : "Masz już konto? Zaloguj się"}
             </Button>

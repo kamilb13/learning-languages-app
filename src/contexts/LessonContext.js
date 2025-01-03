@@ -1,23 +1,30 @@
 import React, {createContext, useState, useContext, useEffect} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useAuthContext} from "./AuthContext";
+import {fetchUserData, saveUserData} from "../service/firebaseService";
 
 const LessonContext = createContext(null);
+
+const DEFAULT_LESSON_STATUS = {
+    "1": "not-started",
+    "2": "not-started",
+    "3": "not-started",
+    "4": "not-started",
+    "5": "not-started",
+    "6": "not-started",
+    "7": "not-started",
+    "8": "not-started",
+};
 
 export const LessonProvider = ({children}) => {
     const totalLessons = 20;
     const [completedLessons, setCompletedLessons] = useState([]);
     const [completedCount, setCompletedCount] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
 
-    const [lessonStatus, setLessonStatus] = useState({
-        "1": "not-started",
-        "2": "not-started",
-        "3": "not-started",
-        "4": "not-started",
-        "5": "not-started",
-        "6": "not-started",
-        "7": "not-started",
-        "8": "not-started",
-    });
+    const {db, user} = useAuthContext();
+
+    const [lessonStatus, setLessonStatus] = useState(DEFAULT_LESSON_STATUS);
 
     // TODO from backend in the future
     const lessons = [
@@ -96,44 +103,59 @@ export const LessonProvider = ({children}) => {
     ];
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const status = await AsyncStorage.getItem('status');
-                const parsedStatus = JSON.parse(status);
-                if (status !== null) {
-                    setLessonStatus(parsedStatus);
-                    const newCompletedCount = Object.values(parsedStatus).filter(v => v === "completed").length;
-                    setCompletedCount(newCompletedCount);
-                    console.log("odczytane statusy\n", parsedStatus);
-                    console.log("obliczony completed count - ", newCompletedCount);
+        const loadLessonStatus = async () => {
+            if (user?.uid) {
+                try {
+                    const data = await fetchUserData(db, user);
+                    if (data?.lessonStatus) {
+                        setLessonStatus(data.lessonStatus);
+                    } else {
+                        setLessonStatus(DEFAULT_LESSON_STATUS);
+                    }
+                } catch (error) {
+                    console.error('Błąd przy odczycie danych użytkownika:', error);
+                    setLessonStatus(DEFAULT_LESSON_STATUS);
+                } finally {
+                    setIsLoading(false);
+                    setIsFirstLoad(false);
                 }
-            } catch (e) {
-                console.log("Error fetching data from AsyncStorage: ", e);
+            } else {
+                setLessonStatus(DEFAULT_LESSON_STATUS);
+                setIsLoading(false);
+                setIsFirstLoad(false);
             }
         };
+        loadLessonStatus();
+    }, [db, user?.uid]);
 
-        fetchData();
-    }, []);
 
     useEffect(() => {
-        const saveData = async () => {
-            try {
-                await AsyncStorage.setItem('status', JSON.stringify(lessonStatus));
-                console.log("Zapisane statusy lekcji\n ",lessonStatus)
-            } catch (e) {
-                console.log("Error saving data to AsyncStorage:", e);
+        const updateLessonStatus = async () => {
+            if (!isLoading && !isFirstLoad && user?.uid) {
+                try {
+                    const data = await fetchUserData(db, user);
+                    if (JSON.stringify(data?.lessonStatus) !== JSON.stringify(lessonStatus)) {
+                        console.log("Zapisywanie danych...");
+                        await saveUserData(db, user, lessonStatus);
+                    }
+                } catch (error) {
+                    console.error('Błąd przy zapisywaniu danych:', error);
+                }
             }
         };
-        console.log("wykonuje zapis pustych? ", lessonStatus)
-        saveData();
-    }, [lessonStatus]);
+        updateLessonStatus();
+    }, [lessonStatus, isLoading, isFirstLoad]);
 
 
+
+    useEffect(()=> {
+        setCompletedCount(Object.values(lessonStatus).filter(status => status === 'completed').length);
+    }, [lessonStatus])
 
     const completeLesson = async (lessonId) => {
         if (!completedLessons.includes(lessonId)) {
             setCompletedLessons((prev) => [...prev, lessonId]);
-            setCompletedCount((prev) => prev+1)
+            setCompletedCount((prev) => prev + 1)
         }
     };
 

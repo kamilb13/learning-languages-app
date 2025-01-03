@@ -7,7 +7,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const LessonsScreen = ({navigation}) => {
     const { lessonStatus, setLessonStatus, lessons } = useLessonContext(); // funkcja dodajaca lekcje do ukonczonych w context
 
-
     const getStatusIcon = (status) => {
         switch (status) {
             case "completed":
