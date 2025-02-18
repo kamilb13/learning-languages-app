@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
                         await setDoc(doc(db, "users", newUser.uid), {
                             email: email
                         });
-                        console.log("Document written with ID: ", user.uid);
+                        console.log("Document written with ID: ", newUser.uid);
                     } catch (e) {
                         console.error("Error adding document user: ", e);
                     }

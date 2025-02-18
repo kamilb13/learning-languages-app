@@ -8,6 +8,7 @@ import AccountScreen from "../../screens/AccountScreen";
 import {AuthContext, useAuthContext} from "../../contexts/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {useLessonContext} from "../../contexts/LessonContext";
+import ExtraLessons from "../../screens/ExtraLessons";
 
 const Drawer = createDrawerNavigator();
 
@@ -46,6 +47,7 @@ const MainDrawer = () => {
             <Drawer.Screen name="Lessons" component={LessonsScreen}/>
             <Drawer.Screen name="Exercises" component={ExercisesScreen}/>
             <Drawer.Screen name="Account" component={AccountScreen}/>
+            <Drawer.Screen name="ExtraLessons" component={ExtraLessons}/>
         </Drawer.Navigator>
     );
 };
